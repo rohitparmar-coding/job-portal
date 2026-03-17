@@ -14,9 +14,7 @@ dotenv.config({});
 const app = express()
 const PORT = process.env.PORT || 8000
 
-app.get("/", (req, res) => {
-    res.send("Backend is running 🚀");
-});
+
 
 // middlerware
 
@@ -34,6 +32,11 @@ app.use(cors(corsOptions));
 
 
 // routes // apis
+
+app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+});
+
 app.use("/api/v1/user", userRoute)
 app.use("/api/v1/company", companyRoute)
 app.use("/api/v1/job", jobRoute)
