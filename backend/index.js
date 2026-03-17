@@ -14,16 +14,22 @@ dotenv.config({});
 const app = express()
 const PORT = process.env.PORT || 8000
 
+app.get("/", (req, res) => {
+    res.send("Backend is running 🚀");
+});
+
 // middlerware
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",
+        "https://your-frontend.vercel.app" // 🔥 add this
+    ],
     credentials: true
 };
-
 app.use(cors(corsOptions));
 
 
