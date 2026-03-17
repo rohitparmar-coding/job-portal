@@ -22,21 +22,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
 const corsOptions = {
-    origin: [
-        "http://localhost:5173",
-        "https://your-frontend.vercel.app" // 🔥 add this
-    ],
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:5173",
+            "https://job-portal-alpha-one-49.vercel.app"
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 };
 app.use(cors(corsOptions));
 
 
 // routes // apis
-
 app.get("/", (req, res) => {
     res.send("Backend is running 🚀");
 });
-
 app.use("/api/v1/user", userRoute)
 app.use("/api/v1/company", companyRoute)
 app.use("/api/v1/job", jobRoute)
