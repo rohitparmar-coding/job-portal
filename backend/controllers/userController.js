@@ -120,11 +120,13 @@ export const login = async (req, res) => {
         }
 
         // cookie
+        const isProduction = true; // manually set
+
         return res.status(200).cookie("token", token, {
             maxAge: 1 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "Lax"
         }).json({
             message: `Welcome back ${user.fullname}`,
             user,
