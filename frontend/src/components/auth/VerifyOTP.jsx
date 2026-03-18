@@ -15,7 +15,8 @@ const handleVerify = async (e) => {
   try {
     const res = await axios.post(
       `${USER_API_END_POINT}/api/v1/user/verify-otp`,
-      { email, otp }
+      { email, otp },
+       {withCredentials:true}
     );
 
     alert(res.data.message);

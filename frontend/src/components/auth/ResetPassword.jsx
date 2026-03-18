@@ -14,7 +14,8 @@ const navigate = useNavigate()
   try {
     const res = await axios.post(
       `${USER_API_END_POINT}/api/v1/user/reset-password`,
-      { email, password }
+      { email, password },
+      {withCredentials:true}
     );
 
     localStorage.removeItem("resetEmail");

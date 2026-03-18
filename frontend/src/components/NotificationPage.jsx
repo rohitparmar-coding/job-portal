@@ -5,6 +5,7 @@ import {
     deleteNotificationFromState
 } from "@/redux/notificationSlice.js";
 import Navbar from "./shared/Navbar.jsx";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const NotificationPage = () => {
     const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const NotificationPage = () => {
     console.log(notifications)
     const handleMarkRead = async (id) => {
         await axios.put(
-            `http://localhost:3000/api/v1/notification/${id}/read`,
+            `${BASE_URL}/api/v1/notification/${id}/read`,
             {},
             { withCredentials: true }
         );
@@ -26,7 +27,7 @@ const NotificationPage = () => {
 
     const handleDelete = async (id) => {
         await axios.delete(
-            `http://localhost:3000/api/v1/notification/${id}`,
+            `${BASE_URL}/api/v1/notification/${id}`,
             { withCredentials: true }
         );
 

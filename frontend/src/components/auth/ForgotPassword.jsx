@@ -14,7 +14,8 @@ const navigate = useNavigate()
   try {
     const res = await axios.post(
       `${USER_API_END_POINT}/api/v1/user/forgot-password`,
-      { email }
+      { email },
+      {withCredentials:true}
     );
 
     localStorage.setItem("resetEmail", email); // store email

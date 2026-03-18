@@ -21,10 +21,12 @@ import VerifyOTP from "./components/auth/VerifyOTP.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
 import { useEffect, useState } from "react";
 import  Loader  from './components/Loader.jsx'
+import useLoadUser from "./hooks/useLoadUser.jsx";
 
 
 export default function App() {
 
+  useLoadUser();
   const [loading,setLoading] = useState(true);
 
   useEffect(()=>{
@@ -78,9 +80,9 @@ export default function App() {
         <Route path="/admin/jobs/:id/applicants" element={<Applicants />} />
 
 
-        <Route path="/save" element={<UserSaveJob />} />
+        <Route path="/save" element={<ProtectedRoute><UserSaveJob /></ProtectedRoute>} />
 
-        <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/notifications" element={<ProtectedRoute> <NotificationPage /> </ProtectedRoute>} />
 
         <Route path="/about" element={<AboutPage />} />
       </Routes>
