@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_BACKEND_URL;
+const API = import.meta.env.VITE_API_URL;
 export const USER_API_END_POINT = `${API}`
 export const JOB_API_END_POINT = `${API}/api/v1/job`
 export const APPLICATION_API_END_POINT = `${API}/api/v1/application`
