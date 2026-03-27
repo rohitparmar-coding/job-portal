@@ -98,7 +98,7 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -106,6 +106,7 @@ import { setSingleJob } from '@/redux/jobSlice.js';
 import { toast } from 'sonner';
 import Navbar from './shared/Navbar';
 import { Avatar, AvatarImage } from './ui/avatar';
+
 
 
 const JobDescription = () => {
@@ -118,6 +119,7 @@ const JobDescription = () => {
   const dispatch = useDispatch()
   const params = useParams();
   const jobId = params.id;
+  const navigate = useNavigate()
 
   const [isApplied, setIsApplied] = useState(false);
 
@@ -131,35 +133,40 @@ const JobDescription = () => {
     }
   }, [singleJob, user]);
 
-  const applyJobHandler = async () => {
-    try {
-      const res = await axios.get(
-        `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-        { withCredentials: true }
-      );
+  // const applyJobHandler = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+  //       { withCredentials: true }
+  //     );
 
-      if (res.data.success) {
-        setIsApplied(true);
+  //     if (res.data.success) {
+  //       setIsApplied(true);
 
-        const updatedSingleJob = {
-          ...singleJob,
-          applications: [
-            ...(singleJob.applications || []),
-            { applicant: user?._id }
-          ]
-        };
+  //       const updatedSingleJob = {
+  //         ...singleJob,
+  //         applications: [
+  //           ...(singleJob.applications || []),
+  //           { applicant: user?._id }
+  //         ]
+  //       };
 
-        dispatch(setSingleJob(updatedSingleJob));
-        toast.success(res.data.message);
-      }
+  //       dispatch(setSingleJob(updatedSingleJob));
+  //       toast.success(res.data.message);
+  //     }
 
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || "Something went wrong");
-    }
-  };
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error(error?.response?.data?.message || "Something went wrong");
+  //   }
+  // };
 
-  // ⭐ Fetch Job
+
+
+
+  //⭐ Fetch Job
+
+
   useEffect(() => {
 
     dispatch(setSingleJob(null));
@@ -191,6 +198,7 @@ const JobDescription = () => {
 
         {/* LEFT SECTION */}
         <div className="md:col-span-2 space-y-8">
+          
 
           {/* Job Header Card */}
           <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8">
@@ -256,6 +264,25 @@ const JobDescription = () => {
               ))}
             </p>
           </div>
+
+          {/* Skills */}
+          <div className="flex flex-wrap gap-3 mt-6 w-full"><div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8">
+            <h2 className="text-2xl font-semibold text-gray-800 border-b pb-3">
+              Skills Required
+            </h2>
+
+            <div className="flex flex-wrap gap-3 mt-6">
+              {singleJob?.skills?.map((skill, index) => (
+                <Badge
+                  key={index}
+                  className="bg-green-100 text-green-700 hover:bg-green-200 p-2 transition"
+                >
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div></div>
+          
           {/* company  */}
           <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8">
             <h2 className="text-2xl font-semibold text-gray-800 border-b pb-3">
@@ -304,7 +331,7 @@ const JobDescription = () => {
                     {singleJob?.company?.location}
                   </p>
                 </div>
-               
+
 
                 <div className="flex flex-col gap-2 text-sm text-gray-500">
                   <span className="font-bold text-green-700">Website:</span>
@@ -364,7 +391,7 @@ const JobDescription = () => {
           {/* Apply Card */}
           <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 sticky top-24">
             <Button
-              onClick={!isApplied ? applyJobHandler : undefined}
+              onClick={() => navigate(`/apply/${jobId}`)}
               disabled={isApplied}
               className={`w-full py-6 text-lg rounded-xl transition-all ${isApplied
                 ? "bg-gray-400 cursor-not-allowed"

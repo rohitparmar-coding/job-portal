@@ -14,8 +14,6 @@ dotenv.config({});
 const app = express()
 const PORT = process.env.PORT || 8000
 
-
-
 // middlerware
 
 app.use(express.json());
@@ -25,7 +23,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             "http://localhost:5173",
-            "https://job-portal-alpha-one-49.vercel.app"
+            process.env.CLIENT_URL
         ];
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);

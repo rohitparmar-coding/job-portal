@@ -222,6 +222,7 @@ const PostJob = () => {
     title: "",
     description: "",
     requirements: "",
+    skills: "",
     location: "",
     salary: "",
     jobType: "",
@@ -342,16 +343,26 @@ const PostJob = () => {
 
               {/* Requirements */}
               <div className="space-y-2 md:col-span-2">
-                <Label>Requirements (comma separated)</Label>
+                <Label>Requirements (use | separator)</Label>
                 <Input
                   name="requirements"
                   value={input.requirements}
                   onChange={changeEventHandler}
-                  placeholder="React, Node.js, MongoDB"
+                  placeholder="React | Node.js | Engineering mindset, problem-solving abilities..."
                   className="h-12 rounded-xl focus:ring-2 focus:ring-black"
                 />
               </div>
-
+              {/* Skills */}
+              <div className="space-y-2 md:col-span-2">
+                <Label>Skills (use | separator)</Label>
+                <Input
+                  name="skills"
+                  value={input.skills}
+                  onChange={changeEventHandler}
+                  placeholder="React | Node.js | MongoDB"
+                  className="h-12 rounded-xl focus:ring-2 focus:ring-black"
+                />
+              </div>
               {/* Salary */}
               <div className="space-y-2">
                 <Label>Salary</Label>
@@ -367,13 +378,17 @@ const PostJob = () => {
               {/* Job Type */}
               <div className="space-y-2">
                 <Label>Job Type</Label>
-                <Input
-                  name="jobType"
-                  value={input.jobType}
-                  onChange={changeEventHandler}
-                  placeholder="Full-time"
-                  className="h-12 rounded-xl focus:ring-2 focus:ring-black"
-                />
+                <Select onValueChange={(value) => setInput({ ...input, jobType: value })}>
+                  <SelectTrigger className="h-12 rounded-xl w-full">
+                    <SelectValue placeholder="Select Job Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Full-time">Full-time</SelectItem>
+                    <SelectItem value="Part-time">Part-time</SelectItem>
+                    <SelectItem value="Internship">Internship</SelectItem>
+                    <SelectItem value="Remote">Remote</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Experience */}

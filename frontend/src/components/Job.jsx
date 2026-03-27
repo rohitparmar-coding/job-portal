@@ -182,6 +182,7 @@ const Job = ({ job }) => {
                     ₹{job?.salary} LPA
                 </Badge>
             </div>
+          
 
             {/* Buttons */}
             <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-6'>

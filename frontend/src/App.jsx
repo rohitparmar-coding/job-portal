@@ -20,23 +20,50 @@ import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 import VerifyOTP from "./components/auth/VerifyOTP.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
 import { useEffect, useState } from "react";
-import  Loader  from './components/Loader.jsx'
-import useLoadUser from "./hooks/useLoadUser.jsx";
+import Loader from './components/Loader.jsx'
+import { useDispatch } from "react-redux";
+import { USER_API_END_POINT } from "./utils/constant.js";
+import axios from "axios";
+import { setUser } from "./redux/authSlice.js";
+import ApplyJob from "./components/ApplyJob.jsx";
+import ApplicationSuccess from "./components/ApplicationSuccess.jsx";
+
 
 
 export default function App() {
 
-  useLoadUser();
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
-    setTimeout(()=>{
-      setLoading(false)
-    },2000)
-  },[])
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${USER_API_END_POINT}/api/v1/user/me`,
+          { withCredentials: true }
+        );
 
-  if(loading){
-    return <Loader/>
+        if (res.data.success) {
+          dispatch(setUser(res.data.user));
+        }
+      } catch (error) {
+        dispatch(setUser(null)); // important
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false)
+  //   }, 2000)
+  // }, [])
+
+  if (loading) {
+    return <Loader />
   }
   return (
     <>
@@ -51,40 +78,101 @@ export default function App() {
 
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/browse" element={<Browse />} />
+        <Route path="/about" element={<AboutPage />} />
 
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/description/:id" element={<JobDescription />} />
+        <Route
+          path="/save"
+          element={
+            <ProtectedRoute>
+              <UserSaveJob />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* admin route for company */}
-        <Route path="/admin/companies" element={<ProtectedRoute> <Companies /> </ProtectedRoute>} />
-        <Route path="/admin/companies/create" element={<ProtectedRoute> <CompanyCreate /> </ProtectedRoute>} />
-        <Route path="/admin/companies/:id" element={<CompanySetup />} />
-        {/* admin route for job */}
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/description/:id"
+          element={
+            <ProtectedRoute>
+              <JobDescription />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/companies"
+          element={
+            <ProtectedRoute role="recruiter">
+              <Companies />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/companies/create"
+          element={
+            <ProtectedRoute role="recruiter">
+              <CompanyCreate />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/companies/:id"
+          element={
+            <ProtectedRoute role="recruiter">
+              <CompanySetup />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admin/jobs"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute role="recruiter">
               <AdminJobs />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/admin/jobs/create"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute role="recruiter">
               <PostJob />
             </ProtectedRoute>
           }
         />
-        <Route path="/admin/jobs/:id/applicants" element={<Applicants />} />
+
+        <Route
+          path="/admin/jobs/:id/applicants"
+          element={
+            <ProtectedRoute role="recruiter">
+              <Applicants />
+            </ProtectedRoute>
+          }
+        />
 
 
-        <Route path="/save" element={<ProtectedRoute><UserSaveJob /></ProtectedRoute>} />
-
-        <Route path="/notifications" element={<ProtectedRoute> <NotificationPage /> </ProtectedRoute>} />
-
-        <Route path="/about" element={<AboutPage />} />
+        <Route path='/apply/:id' element={<ApplyJob/>}/>
+        <Route path="/application-success" element={<ApplicationSuccess/>}/>
       </Routes>
     </>
   )

@@ -183,7 +183,7 @@ const CompaniesTable = () => {
               >
                 {/* Logo */}
                 <TableCell className="py-4">
-                  <Avatar className="h-12 w-12 rounded-lg border shadow-sm hover:scale-110 transition">
+                  <Avatar className="h-14 w-14 object-cover rounded-lg border shadow-sm hover:scale-110 transition">
                     <AvatarImage
                       src={
                         company?.logo ||

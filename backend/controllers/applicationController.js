@@ -1,56 +1,105 @@
 import { Application } from "../models/applicationModel.js";
 import { Job } from "../models/jobModel.js"
+import Cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
+
 
 export const applyJob = async (req, res) => {
     try {
         const userId = req.id;
         const jobId = req.params.id;
 
-        if (!jobId) {
+        const { country, postalCode, city, area, address, resumeUrl } = req.body;
+
+        const resumeFile = req.files?.resume?.[0];
+
+        if (resumeFile && resumeFile.mimetype !== "application/pdf") {
             return res.status(400).json({
-                message: "Job id is required",
+                message: "Only PDF files allowed",
                 success: false,
-            })
+            });
         }
 
-        //   check if the user has alredy applied for the job or not
-        const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+        let resume = "";
+
+        // ✅ CASE 1: Upload to Cloudinary
+        if (resumeFile) {
+            const fileUri = getDataUri(resumeFile);
+
+            const result = await Cloudinary.uploader.upload(
+                fileUri.content,
+                {
+                    folder: "resumes",
+                    resource_type: "auto", // ✅ important for pdf
+                }
+            );
+
+            resume = result.secure_url; // ✅ STORE URL
+        }
+
+        // ✅ CASE 2: Existing resume
+        else if (resumeUrl) {
+            resume = resumeUrl;
+        }
+
+        // ❌ No resume
+        else {
+            return res.status(400).json({
+                message: "Resume is required",
+                success: false,
+            });
+        }
+
+        // ✅ check duplicate
+        const existingApplication = await Application.findOne({
+            job: jobId,
+            applicant: userId,
+        });
 
         if (existingApplication) {
             return res.status(400).json({
-                message: "You have already applied for this job",
-                success: false
-            })
+                message: "You already applied",
+                success: false,
+            });
         }
 
-        //   check if the job exists
+        // ✅ check job
         const job = await Job.findById(jobId);
         if (!job) {
             return res.status(404).json({
                 message: "Job not found",
-                success: false
-            })
+                success: false,
+            });
         }
 
-        //   create application
+        // ✅ create application
         const newApplication = await Application.create({
             job: jobId,
             applicant: userId,
-        })
+            country,
+            postalCode,
+            city,
+            area,
+            address,
+            resume,
+        });
 
         job.applications.push(newApplication._id);
         await job.save();
-        return res.status(200).json({
-            message: "Job applied successfully.",
-            success: true,
-        })
 
+        return res.status(200).json({
+            message: "Application submitted successfully",
+            success: true,
+        });
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false,
+        });
     }
-}
-
+};
 
 // get all applications are user applied
 // only for user 
@@ -116,7 +165,7 @@ export const getApplicants = async (req, res) => {
             success: true,
         })
 
-    }catch (error) {
+    } catch (error) {
         console.log(error);
         return res.status(500).json({
             message: "Internal server error",

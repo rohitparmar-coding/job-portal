@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setNotifications } from "@/redux/notificationSlice.js";
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 const useFetchNotifications = () => {
     const dispatch = useDispatch();
 
@@ -10,7 +9,7 @@ const useFetchNotifications = () => {
         const fetchNotifications = async () => {
             try {
                 const res = await axios.get(
-                    `${BASE_URL}/api/v1/notification`,
+                    `http://localhost:3000/api/v1/notification`,
                     { withCredentials: true }
                 );
 

@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, role }) => {
     const { user } = useSelector(store => store.auth);
 
     // Not logged in
@@ -9,8 +9,8 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/login" replace />;
     }
 
-    // Not recruiter
-    if (user.role !== "recruiter") {
+    // If role is provided, check role
+    if (role && user.role !== role) {
         return <Navigate to="/" replace />;
     }
 

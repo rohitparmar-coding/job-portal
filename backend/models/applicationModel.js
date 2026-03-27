@@ -11,6 +11,25 @@ const applicationSchema = new mongoose.Schema({
         ref:"User",
         required:true,
     },
+    country:{
+      type:String
+    },
+    postalCode:{
+      type:String
+    },
+    city:{
+      type:String
+    },
+    area: {
+      type:String
+    },
+    address: {
+      type:String
+    },
+    resume:{
+      type:String 
+    },
+    
     status:{
         type:String,
         enum:['Pending', 'Accepted', 'Rejected'],
