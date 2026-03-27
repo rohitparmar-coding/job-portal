@@ -6,6 +6,8 @@ import {
 } from "@/redux/notificationSlice.js";
 import Navbar from "./shared/Navbar.jsx";
 
+const API = import.meta.env.VITE_API_URL;
+
 const NotificationPage = () => {
     const dispatch = useDispatch();
 
@@ -16,7 +18,7 @@ const NotificationPage = () => {
     console.log(notifications)
     const handleMarkRead = async (id) => {
         await axios.put(
-            `http://localhost:3000/api/v1/notification/${id}/read`,
+            `${API}/api/v1/notification/${id}/read`,
             {},
             { withCredentials: true }
         );
@@ -26,7 +28,7 @@ const NotificationPage = () => {
 
     const handleDelete = async (id) => {
         await axios.delete(
-            `http://localhost:3000/api/v1/notification/${id}`,
+            `${API}/api/v1/notification/${id}`,
             { withCredentials: true }
         );
 

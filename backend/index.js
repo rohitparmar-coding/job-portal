@@ -23,7 +23,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             "http://localhost:5173",
-            process.env.CLIENT_URL
+            "https://job-portal-one-snowy.vercel.app"
         ];
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
